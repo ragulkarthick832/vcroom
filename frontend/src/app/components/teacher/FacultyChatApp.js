@@ -1,56 +1,55 @@
 import { useState, useEffect, useRef } from "react";
 import axios from "axios";
 
-export default function FacultyChatApp() {
+export default function TeacherChatApp() {
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
-  const [students, setStudents] = useState([]);  // Store students properly
-  const [selectedStudent, setSelectedStudent] = useState(null);
+  const [recipients, setRecipients] = useState([]); // Stores both students and parents
+  const [selectedRecipient, setSelectedRecipient] = useState(null);
   const chatContainerRef = useRef(null);
-
-  // Get logged-in faculty info from local storage
-  const [faculty, setFaculty] = useState({ name: "", role: "" });
+  const [teacher, setTeacher] = useState({ name: "", role: "" });
 
   useEffect(() => {
     try {
-      // Retrieve token from localStorage and parse it
       const storedUser = JSON.parse(localStorage.getItem("user"));
       if (storedUser) {
-        setFaculty(storedUser); // Set faculty name and role
+        setTeacher(storedUser);
       }
-      fetchStudents(storedUser?.name); // Fetch students who messaged this faculty
+      fetchRecipients(storedUser?.name);
     } catch (error) {
-      console.error("Error retrieving faculty info:", error);
+      console.error("Error retrieving teacher info:", error);
     }
   }, []);
 
   useEffect(() => {
-    if (selectedStudent) fetchMessages();
-  }, [selectedStudent]);
+    if (selectedRecipient) fetchMessages();
+  }, [selectedRecipient]);
 
-  // Fetch students who have messaged the faculty
-  const fetchStudents = async (facultyName) => {
-    console.log("inside fetch studets name")
-    if (!facultyName) return;
+  // Fetch both students and parents
+  const fetchRecipients = async (teacherName) => {
+    if (!teacherName) return;
     try {
-      const response = await axios.get(`http://localhost:5001/api/faculty/${facultyName}/students`);
-      
-      // Ensure response is an array of student names
-      const studentList = response.data.students.map((name) => ({ name })); 
-      setStudents(studentList);
-      console.log("Students fetched:", studentList);  // Debugging
+      const response = await axios.get(`http://localhost:5001/api/faculty/${teacherName}/recipients`);
+      const recipientList = response.data.recipients.map(({ name, role }) => ({ name, role }));
+      setRecipients(recipientList);
+      console.log("Recipients fetched:", recipientList);
     } catch (error) {
-      console.error("Error fetching students:", error);
+      console.error("Error fetching recipients:", error);
     }
   };
 
-  // Fetch messages between faculty and selected student
+  // Fetch messages between teacher and selected recipient
   const fetchMessages = async () => {
-    if (!selectedStudent || !faculty.name) return;
+    if (!selectedRecipient || !teacher.name) return;
     try {
-      const response = await axios.get(
-        `http://localhost:5001/api/${faculty.name}/${selectedStudent.name}`
-      );
+      const response = await axios.get("http://localhost:5001/api/chatBetweenUsers", {
+        params: {
+          senderName: teacher.name,
+          senderRole: teacher.role,
+          receiverName: selectedRecipient.name,
+          receiverRole: selectedRecipient.role,
+        },
+      });
       setMessages(response.data.data);
       scrollToBottom();
     } catch (error) {
@@ -58,19 +57,14 @@ export default function FacultyChatApp() {
     }
   };
 
-  // Send message from faculty to selected student
+  // Send message to selected recipient
   const sendMessage = async () => {
-    if (!newMessage.trim() || !selectedStudent || !faculty.name) return;
-
-    const receiver = {
-      name: selectedStudent.name,
-      role: selectedStudent.role || "student",
-    };
+    if (!newMessage.trim() || !selectedRecipient || !teacher.name) return;
 
     try {
       const response = await axios.post("http://localhost:5001/api/send", {
-        sender: faculty,
-        receiver,
+        sender: teacher,
+        receiver: selectedRecipient,
         message: newMessage,
       });
 
@@ -94,31 +88,31 @@ export default function FacultyChatApp() {
 
   return (
     <div className="chat-container bg-[#222539] p-6 rounded-lg shadow-md text-white">
-      <h2 className="text-lg font-bold mb-2">Chat with Students</h2>
+      <h2 className="text-lg font-bold mb-2">Chat with Students & Parents</h2>
 
-      <label>Select Student:</label>
+      <label>Select Recipient:</label>
       <select
         onChange={(e) =>
-          setSelectedStudent(students.find((student) => student.name === e.target.value))
+          setSelectedRecipient(recipients.find((recipient) => recipient.name === e.target.value))
         }
         className="w-full p-2 bg-gray-800 text-white rounded-lg mt-2"
       >
-        <option value="">-- Choose Student --</option>
-        {students.length > 0 ? (
-          students.map((student, index) => (
-            <option key={index} value={student.name}>
-              {student.name}
+        <option value="">-- Choose Recipient --</option>
+        {recipients.length > 0 ? (
+          recipients.map((recipient, index) => (
+            <option key={index} value={recipient.name}>
+              {recipient.name} ({recipient.role})
             </option>
           ))
         ) : (
-          <option disabled>No students found</option>
+          <option disabled>No recipients found</option>
         )}
       </select>
 
-      {selectedStudent && (
+      {selectedRecipient && (
         <>
           <p className="mt-2">
-            Chatting with: <strong>{selectedStudent.name}</strong>
+            Chatting with: <strong>{selectedRecipient.name} ({selectedRecipient.role})</strong>
           </p>
           <div
             ref={chatContainerRef}
@@ -127,13 +121,11 @@ export default function FacultyChatApp() {
             {messages.map((msg, index) => (
               <div
                 key={index}
-                className={`message ${
-                  msg.sender.name === faculty.name ? "text-right" : "text-left"
-                }`}
+                className={`message ${msg.sender.name === teacher.name ? "text-right" : "text-left"}`}
               >
                 <div
                   className={`bubble p-2 rounded-lg inline-block ${
-                    msg.sender.name === faculty.name ? "bg-blue-500" : "bg-gray-700"
+                    msg.sender.name === teacher.name ? "bg-blue-500" : "bg-gray-700"
                   }`}
                 >
                   <strong>{msg.sender.name}:</strong> {msg.message}

@@ -24,6 +24,10 @@ function Login({ goToRegister }) {
       router.push("/admin");
       return;
     }
+    else if (value === "parent") {
+      router.push("/parent/login");
+      return;
+    }
     setFormData({ ...formData, [name]: value });
   };
 
@@ -88,6 +92,7 @@ function Login({ goToRegister }) {
             <option value="student">Student</option>
             <option value="teacher">Teacher</option>
             <option value="admin">Admin</option>
+            <option value="parent">Parent</option> 
           </select>
 
           <div className="relative flex items-center">
