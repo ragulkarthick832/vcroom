@@ -24,6 +24,7 @@ app.use(
   "/uploads/",
   express.static(path.join(__dirname, "uploads/"))
 );
+// ✅ This line is required
 
 // ✅ Connect Database before Routes
 connectDB();
@@ -36,6 +37,8 @@ const resourceRoutes = require("./routes/resourceRoutes");
 const adminRoutes = require("./routes/adminRoutes.js"); // ✅ Admin APIs Added
 
 const scheduleRoutes = require('./routes/scheduleRoutes'); // Make sure the path is correct
+const parentRoutes = require("./routes/parent.js"); // 👈 Add `.js` extension
+
 
 // ragul modification starts
 const chatRoutes = require('./routes/chatRoutes');
@@ -50,6 +53,8 @@ app.use("/api/v1/student", studentRoutes);
 app.use("/api/v1/teacher", teacherRoutes);
 app.use("/api/v1/resources", resourceRoutes);
 app.use("/api/v1/admin", adminRoutes); // ✅ Admin Routes
+app.use("/api/v1/parent", parentRoutes);  // ✅ Parent Auth Routes
+
 
 // ragul modification starts
 app.use('/api', chatRoutes);
