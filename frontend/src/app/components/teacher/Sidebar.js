@@ -84,7 +84,7 @@ export default function Sidebar({
                       : "text-gray-300 bg-[#222539] hover:bg-[#4C4F6B]"
                   }`}
                 onClick={() => {
-                  setSelectedCourse(course.title);
+                  setSelectedCourse(course.courseId);
                   setActiveSection("CourseActions");
                 }}
               >

@@ -39,6 +39,7 @@ const scheduleRoutes = require('./routes/scheduleRoutes'); // Make sure the path
 
 // ragul modification starts
 const chatRoutes = require('./routes/chatRoutes');
+const attRoutes = require('./routes/attRoutes.js');
 // ragul modification ends
 
 
@@ -52,7 +53,10 @@ app.use("/api/v1/admin", adminRoutes); // ✅ Admin Routes
 
 // ragul modification starts
 app.use('/api', chatRoutes);
+app.use('/api',attRoutes);
 // ragul modification ends
+
+
 app.use('/api/v1/schedule', scheduleRoutes);
 // ✅ Start Server
 const PORT = process.env.PORT || 5001;

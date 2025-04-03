@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 const Course = require("../models/Course");
 const User = require("../models/User");
+const Attendance = require("../models/Attendance");
 
 const addCourse = async (req, res) => {
     try {
@@ -87,14 +88,31 @@ const addStudentToCourse = async (req, res) => {
         // Add the student roll number to the students array if not already present
         if (!course.students.includes(studentRollNo)) {
             course.students.push(String(studentRollNo));  // Ensure it's stored as a string
+            await course.save();
+            console.log("✅ Backend: Student successfully added to the course.");
+
+            // Check if attendance record exists for the student in this course
+            const existingAttendance = await Attendance.findOne({ courseId, studentRollNo });
+
+            if (!existingAttendance) {
+                // Create a new attendance record
+                const newAttendance = new Attendance({
+                    courseId,
+                    studentRollNo,
+                    totalClasses: 0,
+                    classesAttended: 0,
+                    attendancePercentage: 0
+                });
+
+                await newAttendance.save();
+                console.log("✅ Backend: Attendance record created for student:", studentRollNo);
+            } else {
+                console.log("⚠️ Backend: Attendance record already exists for student:", studentRollNo);
+            }
+
         } else {
             console.log("⚠️ Student already enrolled in this course.");
         }
-
-        // Save the updated course
-        await course.save();
-
-        console.log("✅ Backend: Student successfully added to the course:", course);
 
         res.status(200).json({ message: "Student added successfully." });
     } catch (error) {
