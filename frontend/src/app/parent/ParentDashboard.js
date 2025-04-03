@@ -1,12 +1,22 @@
 // src/app/parent/ParentDashboard.js
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+
 import Sidebar from "./Sidebar";
 import ChatApp from "./ChatApp";
 
 export default function ParentDashboard() {
   const [activeSection, setActiveSection] = useState("Home");
+  const [parentUser, setParentUser] = useState(null);
+  useEffect(() => {
+    const storedUser = localStorage.getItem("user");
+    if (storedUser) {
+      setParentUser(JSON.parse(storedUser));
+    } else {
+      window.location.href = "/parent/login";
+    }
+  }, []);
 
   return (
     <div className="flex h-screen">
@@ -18,7 +28,10 @@ export default function ParentDashboard() {
         <main className="flex-1 overflow-y-auto p-6">
           {activeSection === "Home" && (
             <div className="text-center mt-10">
-              <h2 className="text-2xl font-semibold">Welcome, Parent!</h2>
+              <h2 className="text-2xl font-semibold text-white">
+  Welcome, {parentUser?.name || "Parent"}!
+</h2>
+
               <p className="text-gray-400 mt-2">Click the chat option in the sidebar to talk with your child's teacher.</p>
             </div>
           )}

@@ -11,17 +11,24 @@ export default function ParentLogin() {
 
   const handleLogin = async (e) => {
     e.preventDefault();
+  
     try {
       const res = await axios.post("http://localhost:5001/api/v1/parent/login", {
         email,
         password,
       });
-      localStorage.setItem("parentToken", res.data.token);
-      router.push("/parent");
+  
+      const { token, parent } = res.data;
+  
+      localStorage.setItem("parentToken", token);
+      localStorage.setItem("user", JSON.stringify({ name: parent.name, role: "parent" }));
+  
+      router.push("/parent"); // ✅ redirect to dashboard
     } catch (err) {
       alert(err.response?.data?.message || "Login failed");
     }
   };
+  
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#191b2a] text-white">
