@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 
 const AssignmentSchema = new mongoose.Schema({
-  title: { type: String, required: true },
+  title: { type: String, required: true, unique: true},
   instruction: { type: String },
   subject: { type: String, required: true }, // New field for subject
   duetime: { type: String, required: true }, // Example: "23:59"

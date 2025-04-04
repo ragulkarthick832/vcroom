@@ -50,8 +50,7 @@ export default function CreateAssignment({ course, setActiveSection }) {
       alert("Assignment Created Successfully!");
       setActiveSection("Assignments");
     } catch (error) {
-      console.error("Error creating assignment:", error);
-      alert("Failed to create assignment.");
+      alert(error.response?.data?.message || "Failed to create assignment.");
     }
   };
 
@@ -88,27 +87,28 @@ export default function CreateAssignment({ course, setActiveSection }) {
         onChange={(e) => setSubject(e.target.value)}
       />
 
-      {/* Due Date & Time */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        <div>
-          <label className="block mb-2">Due Date *</label>
-          <input
-            type="date"
-            className="w-full p-2 bg-[#2D314B] text-white rounded"
-            value={dueDate}
-            onChange={(e) => setDueDate(e.target.value)}
-          />
-        </div>
-        <div>
-          <label className="block mb-2">Due Time *</label>
-          <input
-            type="time"
-            className="w-full p-2 bg-[#2D314B] text-white rounded"
-            value={dueTime}
-            onChange={(e) => setDueTime(e.target.value)}
-          />
-        </div>
-      </div>
+       {/* Due Date & Time */}
+  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <label className="block mb-2">Due Date *</label>
+      <input
+        type="date"
+        className="w-full p-2 bg-[#2D314B] text-white rounded"
+        value={dueDate}
+        onChange={(e) => setDueDate(e.target.value)}
+        min={new Date().toISOString().split("T")[0]} // Prevents past dates
+      />
+    </div>
+    <div>
+      <label className="block mb-2">Due Time *</label>
+      <input
+        type="time"
+        className="w-full p-2 bg-[#2D314B] text-white rounded"
+        value={dueTime}
+        onChange={(e) => setDueTime(e.target.value)}
+      />
+    </div>
+  </div>
 
       {/* File Upload Input */}
       <div className="mt-4">

@@ -48,7 +48,7 @@ exports.getChatsBetweenUsers = async (req, res) => {
 
         res.status(200).json({ success: true, data: chats });
     } else{
-      const Chat = getChatModelStudent(senderName, receiverName);
+      const Chat = getChatModelParent(senderName, receiverName);
       // Fetch all messages sorted by timestamp
       const chats = await Chat.find().sort({ timestamp: 1 });
 
