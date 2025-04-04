@@ -10,6 +10,13 @@ exports.uploadAssignment = async (req, res) => {
     if (!title || !instruction || !subject || !duetime || !duedate) {
       return res.status(400).json({ error: "All fields are required!" });
     }
+    // Check for duplicate title (case insensitive)
+    const existingAssignment = await Assignment.findOne({ title: title });
+
+    if (existingAssignment) {
+      return res.status(400).json({ message: "An assignment with this title already exists!" });
+    }
+
 
     // Use the file uploaded via multer to set the file URL.
     // If req.file exists, create the URL string; otherwise, set to an empty string.

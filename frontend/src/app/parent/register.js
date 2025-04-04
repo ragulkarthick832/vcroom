@@ -44,4 +44,8 @@ export default function ParentRegister() {
       </form>
     </div>
   );
+<<<<<<< HEAD
 }
+=======
+}
+>>>>>>> final-changes

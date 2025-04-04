@@ -43,6 +43,7 @@ const parentRoutes = require("./routes/parent.js"); // 👈 Add `.js` extension
 // ragul modification starts
 const chatRoutes = require('./routes/chatRoutes');
 const attRoutes = require('./routes/attRoutes.js');
+const parentRoutes = require('./routes/parent.js')
 // ragul modification ends
 
 
@@ -59,6 +60,7 @@ app.use("/api/v1/parent", parentRoutes);  // ✅ Parent Auth Routes
 // ragul modification starts
 app.use('/api', chatRoutes);
 app.use('/api',attRoutes);
+app.use("/api/v1/parent", parentRoutes);
 // ragul modification ends
 
 

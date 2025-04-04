@@ -34,10 +34,20 @@ export default function ChatApp() {
 
   const fetchMessages = async () => {
     if (!selectedFaculty) return;
+  
     try {
       const response = await axios.get(
-        `http://localhost:5001/api/${user.name}/${selectedFaculty.name}`
+        `http://localhost:5001/api/chatBetweenUsers`,
+        {
+          params: {
+            senderName: user.name,
+            senderRole: user.role,
+            receiverName: selectedFaculty.name,
+            receiverRole: selectedFaculty.role || "teacher",
+          },
+        }
       );
+  
       setMessages(response.data.data);
       scrollToBottom();
     } catch (error) {
