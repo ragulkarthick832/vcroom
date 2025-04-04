@@ -14,10 +14,9 @@ export default function ChatApp() {
 
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
-<<<<<<< HEAD
-=======
+ 
+
     console.log(storedUser)
->>>>>>> final-changes
     if (storedUser) setUser(storedUser);
     fetchFaculty();
   }, []);
@@ -36,7 +35,6 @@ export default function ChatApp() {
   };
 
   const fetchMessages = async () => {
-<<<<<<< HEAD
     try {
       const res = await axios.get(
         `http://localhost:5001/api/${user.name}/${selectedFaculty.name}`
@@ -45,7 +43,6 @@ export default function ChatApp() {
       scrollToBottom();
     } catch (err) {
       console.error("Error loading messages", err);
-=======
     if (!selectedFaculty) return;
   
     try {
@@ -65,16 +62,13 @@ export default function ChatApp() {
       scrollToBottom();
     } catch (error) {
       console.error("Error fetching messages:", error);
->>>>>>> final-changes
     }
   };
 
   const sendMessage = async () => {
-<<<<<<< HEAD
     if (!newMessage.trim()) return;
-=======
+
     if (!newMessage.trim() || !selectedFaculty) return;
->>>>>>> final-changes
 
     const receiver = {
       name: selectedFaculty.name,
@@ -82,7 +76,6 @@ export default function ChatApp() {
     };
 
     try {
-<<<<<<< HEAD
       const res = await axios.post("http://localhost:5001/api/send", {
         sender: user,
         receiver,
@@ -93,7 +86,6 @@ export default function ChatApp() {
       scrollToBottom();
     } catch (err) {
       console.error("Message send error", err);
-=======
         const response = await axios.post("http://localhost:5001/api/send", {
           sender: user, // Use logged-in user as sender
           receiver,
@@ -102,9 +94,7 @@ export default function ChatApp() {
         setMessages([...messages, response.data.data]);
         setNewMessage("");
         scrollToBottom();
-      } catch (error) {
-        console.error("Error sending message:", error);
->>>>>>> final-changes
+      } 
     }
   };
 
@@ -184,8 +174,5 @@ export default function ChatApp() {
       )}
     </div>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> final-changes
+

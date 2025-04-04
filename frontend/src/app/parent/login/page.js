@@ -62,8 +62,4 @@ export default function ParentLogin() {
       </form>
     </div>
   );
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> final-changes
